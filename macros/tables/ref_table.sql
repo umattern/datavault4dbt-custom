@@ -1,4 +1,4 @@
-{%- macro ref_table(yaml_metadata=none, ref_hub=none, ref_satellites=none, src_ldts=none, src_rsrc=none, historized='latest', snapshot_relation=none, snapshot_trigger_column=none) -%}
+{%- macro ref_table(yaml_metadata=none, ref_hub=none, ref_satellites=none, src_ldts=none, src_rsrc=none, historized='latest', snapshot_relation=none, snapshot_trigger_column=none, additional_columns=none) -%}
 
     {% set ref_hub_description = "
     ref_hub::string     Name of the underlying ref_hub model.
@@ -30,6 +30,13 @@
     snapshot_trigger_column::string     Only required, if 'historized' set to 'snapshot'. Defaults to global variable 'datavault4dbt.sdts_alias'. Only needs to be set if alias deviates from global variable.
     " %}
 
+    {% set additional_columns_description = "
+    additional_columns::list | string       Additional columns from source system or derived columns which should be part of the ref_table.
+                                            The columns need to be available in all source models.
+                                            Optional parameter, defaults to empty list.
+    " %}
+
+
     {%- set ref_hub                 = datavault4dbt.yaml_metadata_parser(name='ref_hub', yaml_metadata=yaml_metadata, parameter=ref_hub, required=True, documentation=ref_hub_description) -%}
     {%- set ref_satellites          = datavault4dbt.yaml_metadata_parser(name='ref_satellites', yaml_metadata=yaml_metadata, parameter=ref_satellites, required=True, documentation=ref_satellites_description) -%}
     {%- set src_ldts                = datavault4dbt.yaml_metadata_parser(name='src_ldts', yaml_metadata=yaml_metadata, parameter=src_ldts, required=False, documentation=src_ldts_description) -%}
@@ -37,6 +44,7 @@
     {%- set historized              = datavault4dbt.yaml_metadata_parser(name='historized', yaml_metadata=yaml_metadata, parameter=historized, required=False, documentation=historized_description) -%}
     {%- set snapshot_relation       = datavault4dbt.yaml_metadata_parser(name='snapshot_relation', yaml_metadata=yaml_metadata, parameter=snapshot_relation, required=False, documentation=snapshot_relation_description) -%}
     {%- set snapshot_trigger_column = datavault4dbt.yaml_metadata_parser(name='snapshot_trigger_column', yaml_metadata=yaml_metadata, parameter=snapshot_trigger_column, required=False, documentation=snapshot_trigger_column_description) -%}
+    {%- set additional_columns      = datavault4dbt.yaml_metadata_parser(name='additional_columns', yaml_metadata=yaml_metadata, parameter=additional_columns, required=False, documentation=additional_columns_description) -%}
 
     {# Applying the default aliases as stored inside the global variables, if src_ldts and src_rsrc are not set. #}
 
@@ -60,6 +68,7 @@
                                                             ref_satellites=ref_satellites,
                                                             historized=historized,
                                                             snapshot_relation=snapshot_relation,
-                                                            snapshot_trigger_column=snapshot_trigger_column)) }}
+                                                            snapshot_trigger_column=snapshot_trigger_column,
+                                                            additional_columns=additional_columns)) }}
 
 {%- endmacro -%}

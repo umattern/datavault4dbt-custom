@@ -11,7 +11,7 @@
         - Allows to insert a static string as record source column, matching business vault definition of a record source
 #}
 
-{%- macro pit(yaml_metadata=none, tracked_entity=none, hashkey=none, sat_names=none, snapshot_relation=none, dimension_key=none, snapshot_trigger_column=none, ldts=none, custom_rsrc=none, ledts=none, sdts=none, pit_type=none, refer_to_ghost_records=True) -%}
+{%- macro pit(yaml_metadata=none, tracked_entity=none, hashkey=none, sat_names=none, snapshot_relation=none, dimension_key=none, snapshot_trigger_column=none, ldts=none, custom_rsrc=none, ledts=none, sdts=none, pit_type=none, refer_to_ghost_records=true, additional_columns=none) -%}
 
     {% set tracked_entity_description = "
     tracked_entity::string              Name of the tracked Hub entity. Must be available as a model inside the dbt project.
@@ -75,6 +75,12 @@
                                         Optional parameter, default is True.
     " %}
 
+    {% set additional_columns_description = "
+    additional_columns::list | string       Additional columns from source system or derived columns which should be part of the PIT.
+                                            The columns need to be available in all source models.
+                                            Optional parameter, defaults to empty list.
+    " %}
+
     {%- set tracked_entity          = datavault4dbt.yaml_metadata_parser(name='tracked_entity', yaml_metadata=yaml_metadata, parameter=tracked_entity, required=True, documentation=tracked_entity_description) -%}
     {%- set hashkey                 = datavault4dbt.yaml_metadata_parser(name='hashkey', yaml_metadata=yaml_metadata, parameter=hashkey, required=True, documentation=hashkey_description) -%}
     {%- set sat_names               = datavault4dbt.yaml_metadata_parser(name='sat_names', yaml_metadata=yaml_metadata, parameter=sat_names, required=True, documentation=sat_names_description) -%}
@@ -87,6 +93,7 @@
     {%- set sdts                    = datavault4dbt.yaml_metadata_parser(name='sdts', yaml_metadata=yaml_metadata, parameter=sdts, required=False, documentation=sdts_description) -%}
     {%- set pit_type                = datavault4dbt.yaml_metadata_parser(name='pit_type', yaml_metadata=yaml_metadata, parameter=pit_type, required=False, documentation=pit_type_description) -%}
     {%- set refer_to_ghost_records  = datavault4dbt.yaml_metadata_parser(name='refer_to_ghost_records', yaml_metadata=yaml_metadata, parameter=refer_to_ghost_records, required=False, documentation=pit_type_description) -%}
+    {%- set additional_columns      = datavault4dbt.yaml_metadata_parser(name='additional_columns', yaml_metadata=yaml_metadata, parameter=additional_columns, required=False, documentation=additional_columns_description) -%}
 
     {# Applying the default aliases as stored inside the global variables, if ldts, sdts and ledts are not set. #}
 
@@ -120,6 +127,7 @@
                                                         snapshot_relation=snapshot_relation,
                                                         snapshot_trigger_column=snapshot_trigger_column,
                                                         dimension_key=dimension_key,
-                                                        refer_to_ghost_records=refer_to_ghost_records)) }}
+                                                        refer_to_ghost_records=refer_to_ghost_records,
+                                                        additional_columns=additional_columns)) }}
 
 {%- endmacro -%}

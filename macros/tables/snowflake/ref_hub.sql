@@ -1,4 +1,4 @@
-{%- macro snowflake__ref_hub(ref_keys, src_ldts, src_rsrc, source_models) -%}
+{%- macro snowflake__ref_hub(ref_keys, src_ldts, src_rsrc, source_models, additional_columns) -%}
 
 {%- set end_of_all_times = datavault4dbt.end_of_all_times() -%}
 {%- set timestamp_format = datavault4dbt.timestamp_format() -%}
