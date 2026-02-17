@@ -36,6 +36,7 @@ vars:
 
   #General Configuration
   datavault4dbt.include_business_objects_before_appearance: false
+  datavault4dbt.enable_static_analysis_overwrite: true
   datavault4dbt.multi_source_models__execution_aware_loading: true
   
   #Ghost Record Configuration  
